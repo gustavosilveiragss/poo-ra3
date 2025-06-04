@@ -22,7 +22,7 @@ public class Main extends Application {
 
         Button btnAvaliador = new Button("Gerenciar Avaliadores");
         btnAvaliador.setPrefWidth(200);
-//        btnAvaliador.setOnAction(e -> new AvaliadorController(primaryStage).mostrar());
+        btnAvaliador.setOnAction(e -> new AvaliadorController(primaryStage).mostrar());
 
         Button btnAvaliacao = new Button("Gerenciar Avaliações");
         btnAvaliacao.setPrefWidth(200);
