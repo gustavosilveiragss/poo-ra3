@@ -1,44 +1,46 @@
 package br.com.puc.poo.entidades;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Avaliador {
-    private int email;
-    private int nome;
-    private int celular;
+public class Avaliador implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String email;
+    private String nome;
+    private String celular;
     private LocalDate dataDeInscricao;
 
     public Avaliador() {
     }
 
-    public Avaliador(int email, int nome, int celular, LocalDate dataDeInscricao) {
+    public Avaliador(String email, String nome, String celular, LocalDate dataDeInscricao) {
         this.email = email;
         this.nome = nome;
         this.celular = celular;
         this.dataDeInscricao = dataDeInscricao;
     }
 
-    public int getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(int email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public int getNome() {
+    public String getNome() {
         return nome;
     }
 
-    public void setNome(int nome) {
+    public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public int getCelular() {
+    public String getCelular() {
         return celular;
     }
 
-    public void setCelular(int celular) {
+    public void setCelular(String celular) {
         this.celular = celular;
     }
 
@@ -75,3 +77,4 @@ public class Avaliador {
         return "Avaliador: " + nome + " - Email: " + email;
     }
 }
+
