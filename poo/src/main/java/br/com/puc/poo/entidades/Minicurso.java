@@ -1,6 +1,9 @@
 package br.com.puc.poo.entidades;
 
-public class Minicurso {
+import java.io.Serializable;
+
+public class Minicurso implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String titulo;
     private String curriculo;
     private int duracao;

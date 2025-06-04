@@ -1,5 +1,6 @@
 package br.com.puc.poo;
 
+import br.com.puc.poo.controllers.AvaliadorController;
 import br.com.puc.poo.controllers.MinicursoController;
 import javafx.application.Application;
 import javafx.scene.Scene;

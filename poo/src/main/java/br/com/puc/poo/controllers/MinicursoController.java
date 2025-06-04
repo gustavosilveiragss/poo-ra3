@@ -6,12 +6,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class MinicursoController {
@@ -34,10 +38,10 @@ public class MinicursoController {
     }
 
     private void criarUI() {
-        this.stage = new Stage();
+        stage = new Stage();
         stage.setTitle("Gerenciamento de Minicursos");
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(this.stageOwner);
+        stage.initOwner(stageOwner);
 
         listView = new ListView<>(minicursos);
         listView.setPrefHeight(300);
@@ -57,23 +61,26 @@ public class MinicursoController {
         Button btnFechar = new Button("Fechar");
         btnFechar.setOnAction(e -> stage.close());
 
-        HBox botoesBox = new HBox(10);
-        botoesBox.getChildren().addAll(btnInserir, btnConsultar, btnAtualizar, btnExcluir, btnFechar);
+        HBox botoes = new HBox(10, btnInserir, btnConsultar, btnAtualizar, btnExcluir, btnFechar);
+        botoes.setAlignment(Pos.CENTER);
 
-        VBox layout = new VBox(15);
+        btnInserir.setStyle("-fx-background-color: #ffb6c1; -fx-text-fill: white;");
+        btnConsultar.setStyle("-fx-background-color: #ff69b4; -fx-text-fill: white;");
+        btnAtualizar.setStyle("-fx-background-color: #ff1493; -fx-text-fill: white;");
+        btnExcluir.setStyle("-fx-background-color: #c71585; -fx-text-fill: white;");
+        btnFechar.setStyle("-fx-background-color: #db7093; -fx-text-fill: white;");
+
+        VBox layout = new VBox(15, new Label("Bem-vindo a página de minicursos! Aqui você pode gerenciar todos os minicursos:"), listView, botoes);
         layout.setStyle("-fx-padding: 20;");
-        layout.getChildren().addAll(new Label("Lista de Minicursos:"), listView, botoesBox);
 
-        Scene cena = new Scene(layout, 600, 500);
-        this.stage.setScene(cena);
+        stage.setScene(new Scene(layout, 600, 500));
     }
 
     private void carregarMinicursos() {
         try {
-            List<Minicurso> listaMinicursos = service.listar();
-            minicursos.clear();
-            minicursos.addAll(listaMinicursos);
-        } catch (Exception e) {
+            List<Minicurso> lista = service.listar();
+            minicursos.setAll(lista);
+        } catch (IOException | ClassNotFoundException e) {
             mostrarAlerta("Erro", "Erro ao carregar minicursos: " + e.getMessage());
         }
     }
@@ -85,18 +92,15 @@ public class MinicursoController {
                 service.inserir(novoMinicurso);
                 minicursos.add(novoMinicurso);
                 mostrarAlerta("Sucesso", "Minicurso inserido com sucesso!");
-            } catch (Exception e) {
-                mostrarAlerta("Erro", "Erro ao inserir minicurso: " + e.getMessage());
+            } catch (IOException | ClassNotFoundException e) {
+                mostrarAlerta("Erro", "Erro ao inserir: " + e.getMessage());
             }
         }
     }
 
     private void consultarMinicurso() {
-        Minicurso selecionado = listView.getSelectionModel().getSelectedItem();
-        if (selecionado == null) {
-            mostrarAlerta("Aviso", "Selecione um minicurso para consultar.");
-            return;
-        }
+        Minicurso selecionado = getMinicursoSelecionado();
+        if (selecionado == null) return;
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Consultar Minicurso");
@@ -114,31 +118,25 @@ public class MinicursoController {
     }
 
     private void atualizarMinicurso() {
-        Minicurso selecionado = listView.getSelectionModel().getSelectedItem();
-        if (selecionado == null) {
-            mostrarAlerta("Aviso", "Selecione um minicurso para atualizar.");
-            return;
-        }
+        Minicurso selecionado = getMinicursoSelecionado();
+        if (selecionado == null) return;
 
-        Minicurso minicursoAtualizado = mostrarFormulario("Atualizar Minicurso", selecionado);
-        if (minicursoAtualizado != null) {
+        Minicurso atualizado = mostrarFormulario("Atualizar Minicurso", selecionado);
+        if (atualizado != null) {
             try {
-                service.atualizar(minicursoAtualizado);
+                service.atualizar(atualizado);
                 int index = minicursos.indexOf(selecionado);
-                minicursos.set(index, minicursoAtualizado);
+                minicursos.set(index, atualizado);
                 mostrarAlerta("Sucesso", "Minicurso atualizado com sucesso!");
-            } catch (Exception e) {
-                mostrarAlerta("Erro", "Erro ao atualizar minicurso: " + e.getMessage());
+            } catch (IOException | ClassNotFoundException e) {
+                mostrarAlerta("Erro", "Erro ao atualizar: " + e.getMessage());
             }
         }
     }
 
     private void excluirMinicurso() {
-        Minicurso selecionado = listView.getSelectionModel().getSelectedItem();
-        if (selecionado == null) {
-            mostrarAlerta("Aviso", "Selecione um minicurso para excluir.");
-            return;
-        }
+        Minicurso selecionado = getMinicursoSelecionado();
+        if (selecionado == null) return;
 
         Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
         confirmacao.setTitle("Confirmar Exclusão");
@@ -149,8 +147,8 @@ public class MinicursoController {
                 service.excluir(selecionado.getTitulo());
                 minicursos.remove(selecionado);
                 mostrarAlerta("Sucesso", "Minicurso excluído com sucesso!");
-            } catch (Exception e) {
-                mostrarAlerta("Erro", "Erro ao excluir minicurso: " + e.getMessage());
+            } catch (IOException | ClassNotFoundException e) {
+                mostrarAlerta("Erro", "Erro ao excluir: " + e.getMessage());
             }
         }
     }
@@ -191,68 +189,67 @@ public class MinicursoController {
             txtPublicoAlvo.setText(minicurso.getPublicoAlvo());
         }
 
-        grid.add(new Label("Título:"), 0, 0);
-        grid.add(txtTitulo, 1, 0);
-        grid.add(new Label("Currículo:"), 0, 1);
-        grid.add(txtCurriculo, 1, 1);
-        grid.add(new Label("Duração (horas):"), 0, 2);
-        grid.add(txtDuracao, 1, 2);
-        grid.add(new Label("Justificativa:"), 0, 3);
-        grid.add(txtJustificativa, 1, 3);
-        grid.add(new Label("Material:"), 0, 4);
-        grid.add(txtMaterial, 1, 4);
-        grid.add(new Label("Objetivo:"), 0, 5);
-        grid.add(txtObjetivo, 1, 5);
-        grid.add(new Label("Público Alvo:"), 0, 6);
-        grid.add(txtPublicoAlvo, 1, 6);
+        grid.addRow(0, new Label("Título:"), txtTitulo);
+        grid.addRow(1, new Label("Currículo:"), txtCurriculo);
+        grid.addRow(2, new Label("Duração (horas):"), txtDuracao);
+        grid.addRow(3, new Label("Justificativa:"), txtJustificativa);
+        grid.addRow(4, new Label("Material:"), txtMaterial);
+        grid.addRow(5, new Label("Objetivo:"), txtObjetivo);
+        grid.addRow(6, new Label("Público Alvo:"), txtPublicoAlvo);
 
         Button btnSalvar = new Button("Salvar");
         Button btnCancelar = new Button("Cancelar");
 
+        grid.setStyle("-fx-padding: 20; -fx-background-color: #fff0f5;");
+
+        btnSalvar.setStyle("-fx-background-color: #ff69b4; -fx-text-fill: white;");
+        btnCancelar.setStyle("-fx-background-color: #db7093; -fx-text-fill: white;");
+
+        // Para uso em lambda, precisa ser efetivamente final
         final Minicurso[] resultado = {null};
 
         btnSalvar.setOnAction(e -> {
-            try {
-                String tituloStr = txtTitulo.getText().trim();
-                String curriculo = txtCurriculo.getText().trim();
-                String justificativa = txtJustificativa.getText().trim();
-                String material = txtMaterial.getText().trim();
-                String objetivo = txtObjetivo.getText().trim();
-                String publicoAlvo = txtPublicoAlvo.getText().trim();
-                int duracao = Integer.parseInt(txtDuracao.getText().trim());
+            String tituloStr = txtTitulo.getText().trim();
+            String curriculo = txtCurriculo.getText().trim();
+            String justificativa = txtJustificativa.getText().trim();
+            String material = txtMaterial.getText().trim();
+            String objetivo = txtObjetivo.getText().trim();
+            String publicoAlvo = txtPublicoAlvo.getText().trim();
+            String duracaoStr = txtDuracao.getText().trim();
 
-                if (tituloStr.isEmpty()) {
-                    mostrarAlerta("Erro", "Título é obrigatório!");
-                    return;
-                }
-                if (curriculo.isEmpty()) {
-                    mostrarAlerta("Erro", "Currículo é obrigatório!");
-                    return;
-                }
+            if (tituloStr.isEmpty() || curriculo.isEmpty() || duracaoStr.isEmpty() ||
+                    justificativa.isEmpty() || material.isEmpty() || objetivo.isEmpty() || publicoAlvo.isEmpty()) {
+                mostrarAlerta("Erro", "Todos os campos são obrigatórios.");
+                return;
+            }
+
+            try {
+                int duracao = Integer.parseInt(duracaoStr);
                 if (duracao <= 0) {
-                    mostrarAlerta("Erro", "Duração deve ser um número positivo!");
+                    mostrarAlerta("Erro", "Duração deve ser um número positivo.");
                     return;
                 }
 
                 resultado[0] = new Minicurso(tituloStr, curriculo, duracao, justificativa, material, objetivo, publicoAlvo);
                 formStage.close();
             } catch (NumberFormatException ex) {
-                mostrarAlerta("Erro", "Duração deve conter um número válido!");
-            } catch (Exception ex) {
-                mostrarAlerta("Erro", "Dados inválidos: " + ex.getMessage());
+                mostrarAlerta("Erro", "Duração deve ser um número válido.");
             }
         });
 
         btnCancelar.setOnAction(e -> formStage.close());
 
-        HBox botoes = new HBox(10);
-        botoes.getChildren().addAll(btnSalvar, btnCancelar);
+        HBox botoes = new HBox(10, btnSalvar, btnCancelar);
+        botoes.setAlignment(Pos.CENTER);
 
-        VBox layout = new VBox(15);
-        layout.getChildren().addAll(grid, botoes);
+        VBox conteudo = new VBox(15, grid, botoes);
+        conteudo.setAlignment(Pos.CENTER);
+        conteudo.setStyle("-fx-padding: 20;");
 
-        Scene formScene = new Scene(layout, 500, 550);
-        formStage.setScene(formScene);
+        BorderPane root = new BorderPane();
+        root.setCenter(conteudo);
+
+        formStage.setScene(new Scene(root, 800, 600));
         formStage.showAndWait();
 
         return resultado[0];
@@ -263,5 +260,13 @@ public class MinicursoController {
         alert.setTitle(titulo);
         alert.setContentText(mensagem);
         alert.showAndWait();
+    }
+
+    private Minicurso getMinicursoSelecionado() {
+        Minicurso selecionado = listView.getSelectionModel().getSelectedItem();
+        if (selecionado == null) {
+            mostrarAlerta("Aviso", "Selecione um minicurso.");
+        }
+        return selecionado;
     }
 }
