@@ -1,6 +1,7 @@
 package br.com.puc.poo.controllers;
 
 import br.com.puc.poo.entidades.Avaliacao;
+import br.com.puc.poo.entidades.Avaliador;
 import br.com.puc.poo.services.AvaliacaoService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +46,9 @@ public class AvaliacaoController {
         Button btnInserir = new Button("Inserir");
         btnInserir.setOnAction(e -> inserirAvaliacao());
 
+        Button btnConsultar = new Button("Consultar");
+        btnConsultar.setOnAction(e -> consultarAvaliacao());
+
         Button btnAtualizar = new Button("Atualizar");
         btnAtualizar.setOnAction(e -> atualizarAvaliacao());
 
@@ -54,10 +58,18 @@ public class AvaliacaoController {
         Button btnFechar = new Button("Fechar");
         btnFechar.setOnAction(e -> stage.close());
 
-        HBox botoes = new HBox(10, btnInserir, btnAtualizar, btnExcluir, btnFechar);
+        HBox botoes = new HBox(10, btnInserir, btnConsultar, btnAtualizar, btnExcluir, btnFechar);
         botoes.setAlignment(Pos.CENTER);
 
-        VBox layout = new VBox(15, new Label("Gerenciar Avaliações:"), listView, botoes);
+        // Estilos opcionais (como no AvaliadorController)
+        btnInserir.setStyle("-fx-background-color: #ffb6c1; -fx-text-fill: white;");
+        btnConsultar.setStyle("-fx-background-color: #ff69b4; -fx-text-fill: white;");
+        btnAtualizar.setStyle("-fx-background-color: #ff1493; -fx-text-fill: white;");
+        btnExcluir.setStyle("-fx-background-color: #c71585; -fx-text-fill: white;");
+        btnFechar.setStyle("-fx-background-color: #db7093; -fx-text-fill: white;");
+
+        VBox layout = new VBox(15, new Label("Bem-vindo à página de avaliações! Aqui você pode gerenciar todas as avaliações:"),
+                listView, botoes);
         layout.setStyle("-fx-padding: 20;");
 
         stage.setScene(new Scene(layout, 600, 500));
@@ -83,6 +95,23 @@ public class AvaliacaoController {
                 mostrarAlerta("Erro", "Erro ao inserir: " + e.getMessage());
             }
         }
+    }
+
+    private void consultarAvaliacao() {
+        Avaliacao selecionada = getAvaliacaoSelecionada();
+        if (selecionada == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Consultar Avaliação");
+        alert.setHeaderText("Dados da Avaliação");
+        alert.setContentText(
+                "ID: " + selecionada.getId() + "\n" +
+                        "Aderência: " + selecionada.getAderencia() + "\n" +
+                        "Qualidade: " + selecionada.getQualidade() + "\n" +
+                        "Originalidade: " + selecionada.getOriginalidade() + "\n" +
+                        "Nota Final: " + selecionada.getNota()
+        );
+        alert.showAndWait();
     }
 
     private void atualizarAvaliacao() {
@@ -130,7 +159,7 @@ public class AvaliacaoController {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setStyle("-fx-padding: 20;");
+        grid.setStyle("-fx-padding: 20; -fx-background-color: #fff0f5;");
 
         TextField txtAderencia = new TextField();
         TextField txtQualidade = new TextField();
@@ -152,6 +181,9 @@ public class AvaliacaoController {
         Button btnSalvar = new Button("Salvar");
         Button btnCancelar = new Button("Cancelar");
 
+        btnSalvar.setStyle("-fx-background-color: #ff69b4; -fx-text-fill: white;");
+        btnCancelar.setStyle("-fx-background-color: #db7093; -fx-text-fill: white;");
+
         final Avaliacao[] resultado = {null};
 
         btnSalvar.setOnAction(e -> {
@@ -162,7 +194,7 @@ public class AvaliacaoController {
                 int nota = Integer.parseInt(txtNota.getText());
 
                 if (avaliacao == null) {
-                    resultado[0] = new Avaliacao(0, aderencia, qualidade, originalidade, nota); // ID será definido pelo service
+                    resultado[0] = new Avaliacao(0, aderencia, qualidade, originalidade, nota);
                 } else {
                     resultado[0] = new Avaliacao(avaliacao.getId(), aderencia, qualidade, originalidade, nota);
                 }
