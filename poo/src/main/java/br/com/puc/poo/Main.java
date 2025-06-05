@@ -1,6 +1,7 @@
 package br.com.puc.poo;
 
 import br.com.puc.poo.controllers.AvaliadorController;
+import br.com.puc.poo.controllers.AvaliacaoController;
 import br.com.puc.poo.controllers.MinicursoController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -27,7 +28,7 @@ public class Main extends Application {
 
         Button btnAvaliacao = new Button("Gerenciar Avaliações");
         btnAvaliacao.setPrefWidth(200);
-//        btnAvaliacao.setOnAction(e -> new AvaliacaoController(primaryStage).mostrar());
+        btnAvaliacao.setOnAction(e -> new AvaliacaoController(primaryStage).mostrar());
 
         VBox layout = new VBox(15);
         layout.setStyle("-fx-padding: 30; -fx-alignment: center;");

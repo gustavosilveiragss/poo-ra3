@@ -1,6 +1,11 @@
 package br.com.puc.poo.entidades;
 
-public class Avaliacao {
+import java.io.Serializable;
+
+public class Avaliacao implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private int id;
     private int aderencia;
     private int qualidade;
     private int originalidade;
@@ -9,11 +14,20 @@ public class Avaliacao {
     public Avaliacao() {
     }
 
-    public Avaliacao(int aderencia, int qualidade, int originalidade, int nota) {
+    public Avaliacao(int id, int aderencia, int qualidade, int originalidade, int nota) {
+        this.id = id;
         this.aderencia = aderencia;
         this.qualidade = qualidade;
         this.originalidade = originalidade;
         this.nota = nota;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getAderencia() {
