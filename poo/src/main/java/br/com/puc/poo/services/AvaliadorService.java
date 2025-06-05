@@ -40,9 +40,11 @@ public class AvaliadorService {
         List<Avaliador> avaliadores = listar();
 
         for (Avaliador a : avaliadores) {
-            if (!a.getEmail().equalsIgnoreCase(avaliadorAtualizado.getEmail()) &&
-                    a.getCelular().equals(avaliadorAtualizado.getCelular())) {
-                throw new IOException("Já existe um avaliador com este número de celular.");
+            if(a.getEmail().equalsIgnoreCase(avaliadorAtualizado.getEmail())){
+                throw new IOException("Ja existe um avaliador com este e-mail.");
+            }
+            if(a.getCelular().equals(avaliadorAtualizado.getCelular())){
+                throw new IOException("Ja existe um avaliador com este numero de celular");
             }
         }
 
