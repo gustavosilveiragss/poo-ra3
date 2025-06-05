@@ -12,7 +12,7 @@ public class AvaliadorService {
     public void inserir(Avaliador avaliador) throws IOException, ClassNotFoundException {
         List<Avaliador> avaliadores = listar();
         avaliadores.add(avaliador);
-        salvarTodos(avaliadores);
+        salvarAvaliadores(avaliadores);
     }
 
     public List<Avaliador> listar() throws IOException, ClassNotFoundException {
@@ -36,16 +36,16 @@ public class AvaliadorService {
                 break;
             }
         }
-        salvarTodos(avaliadores);
+        salvarAvaliadores(avaliadores);
     }
 
     public void excluir(String email) throws IOException, ClassNotFoundException {
         List<Avaliador> avaliadores = listar();
         avaliadores.removeIf(avaliador -> avaliador.getEmail().equals(email));
-        salvarTodos(avaliadores);
+        salvarAvaliadores(avaliadores);
     }
 
-    private void salvarTodos(List<Avaliador> avaliadores) throws IOException {
+    private void salvarAvaliadores(List<Avaliador> avaliadores) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
             oos.writeObject(avaliadores);
         }
