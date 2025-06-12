@@ -1,13 +1,17 @@
 package br.com.puc.poo.entidades;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
-public class Autor {
+public class Autor implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String nome;
     private LocalDate dataDeNascimento;
     private String formacao;
     private String email;
+
 
     public Autor() {
     }
@@ -69,6 +73,6 @@ public class Autor {
 
     @Override
     public String toString() {
-        return nome + " - " + email;
+        return nome + " - " + email + " - " + formacao;
     }
 }

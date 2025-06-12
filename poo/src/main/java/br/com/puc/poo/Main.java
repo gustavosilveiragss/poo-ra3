@@ -3,6 +3,7 @@ package br.com.puc.poo;
 import br.com.puc.poo.controllers.AvaliadorController;
 import br.com.puc.poo.controllers.AvaliacaoController;
 import br.com.puc.poo.controllers.MinicursoController;
+import br.com.puc.poo.controllers.AutorController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +17,7 @@ public class Main extends Application {
 
         Button btnAutor = new Button("Gerenciar Autores");
         btnAutor.setPrefWidth(200);
-//        btnAutor.setOnAction(e -> new AutorController(primaryStage).mostrar());
+        btnAutor.setOnAction(e -> new AutorController(primaryStage).mostrar());
 
         Button btnMinicurso = new Button("Gerenciar Minicursos");
         btnMinicurso.setPrefWidth(200);
