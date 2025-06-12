@@ -120,10 +120,17 @@ public class AvaliadorController {
         Avaliador selecionado = getAvaliadorSelecionado();
         if (selecionado == null) return;
 
+        Avaliador original = new Avaliador(
+                selecionado.getEmail(),
+                selecionado.getNome(),
+                selecionado.getCelular(),
+                selecionado.getDataDeInscricao()
+        );
+
         Avaliador atualizado = mostrarFormulario("Atualizar Avaliador", selecionado);
         if (atualizado != null) {
             try {
-                service.atualizar(atualizado);
+                service.atualizar(original, atualizado);
                 int index = avaliadores.indexOf(selecionado);
                 avaliadores.set(index, atualizado);
                 mostrarAlerta("Sucesso", "Avaliador atualizado com sucesso!");
