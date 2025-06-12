@@ -36,21 +36,23 @@ public class AvaliadorService {
         }
     }
 
-    public void atualizar(Avaliador avaliadorAtualizado) throws IOException, ClassNotFoundException {
+    public void atualizar(Avaliador original, Avaliador atualizado) throws IOException, ClassNotFoundException {
         List<Avaliador> avaliadores = listar();
 
         for (Avaliador a : avaliadores) {
-            if(a.getEmail().equalsIgnoreCase(avaliadorAtualizado.getEmail())){
-                throw new IOException("Ja existe um avaliador com este e-mail.");
-            }
-            if(a.getCelular().equals(avaliadorAtualizado.getCelular())){
-                throw new IOException("Ja existe um avaliador com este numero de celular");
+            if (!a.getEmail().equalsIgnoreCase(original.getEmail())) {
+                if (a.getEmail().equalsIgnoreCase(atualizado.getEmail())) {
+                    throw new IOException("Já existe um avaliador com este e-mail.");
+                }
+                if (a.getCelular().equals(atualizado.getCelular())) {
+                    throw new IOException("Já existe um avaliador com este número de celular");
+                }
             }
         }
 
         for (int i = 0; i < avaliadores.size(); i++) {
-            if (avaliadores.get(i).getEmail().equalsIgnoreCase(avaliadorAtualizado.getEmail())) {
-                avaliadores.set(i, avaliadorAtualizado);
+            if (avaliadores.get(i).getEmail().equalsIgnoreCase(original.getEmail())) {
+                avaliadores.set(i, atualizado);
                 break;
             }
         }
